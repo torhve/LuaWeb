@@ -1,2 +1,173 @@
-{( "index.html" )}
-about from lua
+{( "header.html" )}
+    <div class="container ">
+      <div class="row">
+          <div class="span12 page-header">
+              <h1 class="blue">About <small> my lua micro micro framework</smalll></h1>
+          </div>
+          <div class="span12 content">
+              <h2>Nginx (openresty)</h2>
+              <p>The unusual part about this project is it's usage of nginx as the "app server". This is possible using lua, since there is a nginx lua module that enables you to call lua from the nginx conf.</p>
+              <h3 class="bear-color">nginx.conf</h3>
+              <pre>
+lua_package_path '/home/www/lua/?.lua;;';
+server {
+  listen 80;
+  server_name example.no www.example.no;
+  set $root /home/www/;
+  root $root;
+
+  # Serve static if file exist, or send to lua
+  location / { try_files $uri @lua; }
+  # Lua app
+  location @lua {
+      content_by_lua_file $root/lua/index.lua;
+  }
+}
+              </pre>
+          </div>
+          <div class="span12 content">
+              <h2>
+                  The app
+              </h2>
+              <p>Here follows the most simplest of apps. It has a redis connection, and two views, with a route each.</p>
+              <h3 class="bear-color">index.lua</h3>
+              <pre>{( "index.lua" )}</pre>
+          </div>
+          <div class="span12 content">
+              <h2>Templating</h2>
+              <p>
+              The simple temlate engine is from the <a href="//tir.mongrel2.org">Tir</a> micro framework. You can read about it <a href="http://sheddingbikes.com/posts/1289384533.html">here</a>
+              </p>
+              <p>A simple template would look like this:</p>
+              <h3 class="bear-color">index.html</h3>
+              <pre>
+              &#123;( "header.html" )}
+                &lt;div class="content"&gt;
+                    Hello from lua!
+                &lt;/div&gt;
+              &#123;( "footer.html" )}
+              </pre>
+
+              This is what the template engine looks like:
+              <h3 class="bear-color">tirtemplate.lua</h3>
+              <pre>
+module('tirtemplate', package.seeall)
+
+-- Simplistic HTML escaping.
+function escape(s)
+    if s == nil then return '' end
+
+    local esc, i = s:gsub('&', '&amp;'):gsub('<', '&lt;'):gsub('>', '&gt;')
+    return esc
+end
+
+-- Simplistic Tir template escaping, for when you need to show lua code on web.
+function tirescape(s)
+    if s == nil then return '' end
+
+    local esc, i = s:gsub('&#123;', '&#123;'):gsub('}', '&#125;')
+    return tirtemplate.escape(esc)
+end
+
+-- Helper function that loads a file into ram.
+function load_file(name)
+    local intmp = assert(io.open(name, 'r'))
+    local content = intmp:read('*a')
+    intmp:close()
+
+    return content
+end
+
+-- Used in template parsing to figure out what each &#123;} does.
+local VIEW_ACTIONS = &#123;
+    &#91;'&#123;%'&#93; = function(code)
+        return code
+    end,
+
+    &#91;'&#123;&#123;'&#93; = function(code)
+        return ('_result&#91;#_result+1&#93; = %s'):format(code)
+    end,
+
+    &#91;'&#123;('&#93; = function(code)
+        return (&#91;&#91; 
+            local tirtemplate = require('tirtemplate')
+            if not _children&#91;%s&#93; then
+                _children&#91;%s&#93; = tirtemplate.tload(%s)
+            end
+
+            _result&#91;#_result+1&#93; = _children&#91;%s&#93;(getfenv())
+        &#93;&#93;):format(code, code, code, code)
+    end,
+
+    &#91;'&#123;<'&#93; = function(code)
+        return ('local tirtemplate = require("tirtemplate") _result&#91;#_result+1&#93; =  tirtemplate.escape(%s)'):format(code)
+    end,
+}
+
+-- Takes a view template and optional name (usually a file) and 
+-- returns a function you can call with a table to render the view.
+function compile_view(tmpl, name)
+    local tmpl = tmpl .. '&#123;}'
+    local code = &#123;'local _result, _children = &#123;}, &#123;}\n'}
+
+    for text, block in string.gmatch(tmpl, "(&#91;^&#123;&#93;-)(%b&#123;})") do
+        local act = VIEW_ACTIONS&#91;block:sub(1,2)&#93;
+        local output = text
+
+        if act then
+            code&#91;#code+1&#93; =  '_result&#91;#_result+1&#93; = &#91;&#91;' .. text .. '&#93;&#93;'
+            code&#91;#code+1&#93; = act(block:sub(3,-3))
+        elseif #block > 2 then
+            code&#91;#code+1&#93; = '_result&#91;#_result+1&#93; = &#91;&#91;' .. text .. block .. '&#93;&#93;'
+        else
+            code&#91;#code+1&#93; =  '_result&#91;#_result+1&#93; = &#91;&#91;' .. text .. '&#93;&#93;'
+        end
+    end
+
+    code&#91;#code+1&#93; = 'return table.concat(_result)'
+
+    code = table.concat(code, '\n')
+    local func, err = loadstring(code, name)
+
+    if err then
+        assert(func, err)
+    end
+
+    return function(context)
+        assert(context, "You must always pass in a table for context.")
+        setmetatable(context, &#123;__index=_G})
+        setfenv(func, context)
+        return func()
+    end
+end
+
+function tload(name)
+
+    name = TEMPLATEDIR .. name
+
+    if false then
+        local tempf = load_file(name)
+        return compile_view(tempf, name)
+    else
+        return function (params)
+            local tempf = load_file(name)
+            assert(tempf, "Template " .. name .. " does not exist.")
+
+            return compile_view(tempf, name)(params)
+        end
+    end
+end
+          </pre>
+          Tir uses a BSD 3-clause <a href="http://tir.mongrel2.org/wiki/license.html">license</a>.
+          </div>
+          <div class="span12 content">
+              <h2>
+              Source
+              </h2>
+              Find the complete source at github
+          </div>
+
+      </div>
+  </div>
+  <hr>
+{( "footer.html" )}

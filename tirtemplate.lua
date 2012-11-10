@@ -8,6 +8,14 @@ function escape(s)
     return esc
 end
 
+-- Simplistic Tir template escaping, for when you need to show lua code on web.
+function tirescape(s)
+    if s == nil then return '' end
+
+    local esc, i = s:gsub('{', '&#123;'):gsub('}', '&#125;')
+    return tirtemplate.escape(esc)
+end
+
 -- Helper function that loads a file into ram.
 function load_file(name)
     local intmp = assert(io.open(name, 'r'))
@@ -29,7 +37,7 @@ local VIEW_ACTIONS = {
 
     ['{('] = function(code)
         return ([[ 
-            local tt = require('tirtemplate')
+            local tirtemplate = require('tirtemplate')
             if not _children[%s] then
                 _children[%s] = tirtemplate.tload(%s)
             end
@@ -39,7 +47,7 @@ local VIEW_ACTIONS = {
     end,
 
     ['{<'] = function(code)
-        return ('_result[#_result+1] =  escape(%s)'):format(code)
+        return ('local tirtemplate = require("tirtemplate") _result[#_result+1] =  tirtemplate.escape(%s)'):format(code)
     end,
 }
 
