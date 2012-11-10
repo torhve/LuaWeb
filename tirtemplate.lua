@@ -92,7 +92,7 @@ function tload(name)
 
     name = TEMPLATEDIR .. name
 
-    if false then
+    if not os.getenv('DEV') then
         local tempf = load_file(name)
         return compile_view(tempf, name)
     else
