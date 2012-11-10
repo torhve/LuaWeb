@@ -44,6 +44,12 @@ local function about()
 end
 
 
+--
+-- hello world view
+--
+local function hello()
+    ngx.print( tirtemplate.tload('hello.html'){} )
+end
 
 -- 
 -- Initialise db
@@ -75,6 +81,7 @@ end
 local routes = {
     ['^/$']      = index,
     ['^/about$'] = about,
+    ['^/hello$'] = hello,
 }
 
 
