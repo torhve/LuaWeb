@@ -2,11 +2,13 @@
     <div class="container ">
       <div class="row">
           <div class="span12 page-header">
-              <h1 class="blue">About <small> my lua micro micro framework</small></h1>
+              <h1 class="blue">About <small> my lua micro framework proof of concept</small></h1>
+              <p>This page is just a document to describe my attempt at testing the lua features of nginx. The software below is just a proof of concept, and is not intended to be production ready. The project consists of 3 parts: nginx+openresty, my lua-app for db, routing, and loading templates and finally Tir's template engine</p>
           </div>
           <div class="span12 content">
               <h2>Nginx (openresty)</h2>
-              <p>The unusual part about this project is it's usage of nginx as the "app server". This is possible using lua, since there is a nginx lua module that enables you to call lua from the nginx conf.</p>
+              <p>The unusual part about this project is it's usage of nginx as the "app server". This is possible using lua, since there is a nginx lua module that enables you to call lua from the nginx conf. Have a look at <a href="http://openresty.org/">openresty's site</a> for more about what it enables you to do.</p>
+              <p>Here follows the first part, the nginx configuration to run the lua app and also serve static files:</p>
               <h3 class="bear-color">nginx.conf</h3>
               <pre>
 lua_package_path '/home/www/lua/?.lua;;';
@@ -29,7 +31,7 @@ server {
               <h2>
                   The app
               </h2>
-              <p>Here follows the most simplest of apps. It has a redis connection, and two views, with a route each.</p>
+              <p>Here follows the most simplest of apps. It uses a redis connection for a simple counter, just as a demo, and three views, with a route each.</p>
               <h3 class="bear-color">index.lua</h3>
               <pre>{( "index.lua" )}</pre>
           </div>
