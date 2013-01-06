@@ -37,7 +37,7 @@ local function about()
 
     -- load template
     local page = tirtemplate.tload('about.html')
-    local context = {counter = tostring(counter) }
+    local context = {title = 'My lua micro web framework', counter = tostring(counter) }
     -- render template with counter as context
     -- and return it to nginx
     ngx.print( page(context) )
@@ -48,7 +48,7 @@ local function saltvirt()
     local counter, err = red:incr("saltvirt_visist_counter")
     -- load template
     local page = tirtemplate.tload('saltvirt.html')
-    local context = {counter = tostring(counter) }
+    local context = {title = 'HTML5 virtualization UI on top of Salt Stack', counter = tostring(counter) }
     -- render template with counter as context
     -- and return it to nginx
     ngx.print( page(context) )
@@ -58,7 +58,7 @@ local function icinga()
     local counter, err = red:incr("icinga_visit_counter")
     -- load template
     local page = tirtemplate.tload('salt-icinga-nrpe-replacement.html')
-    local context = {counter = tostring(counter) }
+    local context = {title = 'Salt as icinga NRPE replacement', counter = tostring(counter) }
     -- render template with counter as context
     -- and return it to nginx
     ngx.print( page(context) )
