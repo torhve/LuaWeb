@@ -43,6 +43,26 @@ local function about()
     ngx.print( page(context) )
 end
 
+local function saltvirt()
+    -- increment saltvirt counter
+    local counter, err = red:incr("saltvirt_visist_counter")
+    -- load template
+    local page = tirtemplate.tload('saltvirt.html')
+    local context = {counter = tostring(counter) }
+    -- render template with counter as context
+    -- and return it to nginx
+    ngx.print( page(context) )
+end
+local function icinga()
+    -- increment icinga counter
+    local counter, err = red:incr("icinga_visit_counter")
+    -- load template
+    local page = tirtemplate.tload('salt-icinga-nrpe-replacement.html')
+    local context = {counter = tostring(counter) }
+    -- render template with counter as context
+    -- and return it to nginx
+    ngx.print( page(context) )
+end
 
 --
 -- hello world view
@@ -80,6 +100,8 @@ end
 -- mapping patterns to views
 local routes = {
     ['^/$']      = index,
+    ['^/saltvirt$'] = saltvirt,
+    ['^/2013/01/05/salt-icinga-nrpe-replacement$'] = icinga,
     ['^/about$'] = about,
     ['^/hello$'] = hello,
 }
