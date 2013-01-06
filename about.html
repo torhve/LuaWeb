@@ -1,16 +1,16 @@
 {( "header.html" )}
-    <div class="container ">
-      <div class="row">
-          <div class="span12 page-header">
+    <article class="content ">
+      <div class="bro">
+          <div class="spy12 page-header">
               <h1 class="blue">About <small> my lua micro framework proof of concept</small></h1>
               <p>This page is just a document to describe my attempt at testing the lua features of nginx. The software below is just a proof of concept, and is not intended to be production ready. The project consists of 3 parts: nginx+openresty, my lua-app for db, routing, and loading templates and finally Tir's template engine</p>
           </div>
-          <div class="span12 content">
+          <div class="spy12 ">
               <h2>Nginx (openresty)</h2>
               <p>The unusual part about this project is it's usage of nginx as the "app server". This is possible using lua, since there is a nginx lua module that enables you to call lua from the nginx conf. Have a look at <a href="http://openresty.org/">openresty's site</a> for more about what it enables you to do.</p>
               <p>Here follows the first part, the nginx configuration to run the lua app and also serve static files:</p>
               <h3 class="bear-color">nginx.conf</h3>
-              <pre>
+              <pre><code>
 lua_package_path '/home/www/lua/?.lua;;';
 server {
   listen 80;
@@ -25,34 +25,34 @@ server {
       content_by_lua_file $root/lua/index.lua;
   }
 }
-              </pre>
+              </code></pre>
           </div>
-          <div class="span12 content">
+          <div class="spy12 ">
               <h2>
                   The app
               </h2>
               <p>Here follows the most simplest of apps. It uses a redis connection for a simple counter, just as a demo, and three views, with a route each.</p>
               <h3 class="bear-color">index.lua</h3>
-              <pre>{( "index.lua" )}</pre>
+              <pre><code>{( "indexdemo.lua" )}</code></pre>
           </div>
-          <div class="span12 content">
+          <div class="spy12 ">
               <h2>Templating</h2>
               <p>
               The simple temlate engine is from the <a href="//tir.mongrel2.org">Tir</a> micro framework. You can read about it <a href="http://sheddingbikes.com/posts/1289384533.html">here</a>
               </p>
               <p>A simple template would look like this:</p>
               <h3 class="bear-color">index.html</h3>
-              <pre>
+              <pre><code>
               &#123;( "header.html" )}
-                &lt;div class="content"&gt;
+                &lt;div class=""&gt;
                     Hello from lua!
                 &lt;/div&gt;
               &#123;( "footer.html" )}
-              </pre>
+              </code></pre>
 
               This is what the template engine looks like:
               <h3 class="bear-color">tirtemplate.lua</h3>
-              <pre>
+              <pre><code>
 module('tirtemplate', package.seeall)
 
 -- Simplistic HTML escaping.
@@ -159,15 +159,14 @@ function tload(name)
         end
     end
 end
-          </pre>
+          </code></pre>
           Tir uses a BSD 3-clause <a href="http://tir.mongrel2.org/wiki/license.html">license</a>.
           </div>
-          <div class="span12 content">
+          <div class="spy12 ">
               <h2>
               Source
               </h2>
               Find the complete source at <a href="https://github.com/torhve/LuaWeb"><i class="icon-github"></i> github</a>.
           </div>
-      </div>
-  <hr class="featurette-divider">
+      </article>
 {( "footer.html" )}
