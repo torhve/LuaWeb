@@ -68,6 +68,7 @@
         }
     .carousel-caption {
       background-color: transparent;
+      margin-left: 15px;
     }
     .carousel-caption h1, .carousel-caption .lead {
       margin: 0;
@@ -151,6 +152,18 @@
         margin-left: 18%;
         padding: 30px;
     }
+    .carousel {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: auto;
+        margin: 0;
+        margin-left: -5%;
+        margin-top: -30px;
+        margin-right: -30px;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #eee;
+    }
     .content p, .content blockquote {
         max-width: 968px;
     }
@@ -166,10 +179,13 @@
     .marketing {
         text-align: center;
     }
-    .marketing .span4 {
-        margin-bottom: 15px;
+    .marketing .drop-shadow {
         padding: 5px;
-      width: 30%;
+        margin: 1%; / for 3 boxes
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 15px;
+        width: 31%;
     }
     @media (max-width: 968px) {
         #sidebar, .content {
@@ -226,7 +242,7 @@
       </aside>
       <aside class="info">
           <h3><a class="brand" title="That's me" href="/">Tor Hveem</a></h3>
-          <p>Letters from a stratosphere adventurer</p>
+          <p class="muted">Letters from a stratosphere adventurer</p>
           <ul class="unstyled">
               <li><a href="https://twitter.com/thveem"><i class="icon-twitter"></i>thveem</a></li>
               <li><a href='&#109;ail&#116;o&#58;&#116;&#111;r&#64;h%76&#101;%&#54;5m%2&#69;no'><i class="icon-envelope-alt"></i>t&#111;r&#64;&#104;&#118;&#101;em&#46;&#110;o</a></li>
