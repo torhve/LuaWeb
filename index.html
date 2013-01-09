@@ -56,7 +56,7 @@
     <div class="content">
         <h2>The blag</h1>
         <ul class="blog-post-list unstyled">
-            {% for date, title in pairs(posts) do %}
+            {% for date, title in itersort(posts) do %}
             <li><h5><a href="/{{slugify(title)}}">{{title}}</a><small> {{ ngx.http_time(date) }}</a>
             {% end %}
             <li><h5><a href="/2013/01/05/salt-icinga-nrpe-replacement">How I taught Icinga how to use Salt Stack for asynchrynous distributed passive checks</a><small> 05.01.2013</small></h5></li>

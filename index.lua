@@ -31,8 +31,25 @@ local function get_posts()
     return t
 end
 
+-- Return a table with post date as key and title as val
+local function posts_with_dates(limit)
+    local postlist = get_posts()
+    local posts = {}
+    for i, post in pairs(postlist) do
+        local gitdate = file2gitci(BLAGDIR, post)
+        -- Skip unversioned files
+        if #gitdate > 0 then 
+            -- Use first date
+            posts[gitdate[1]] = filename2title(post)
+        end
+        -- Break when we reach limit
+        if limit and i > limit then break end
+    end
+    return posts
+end
+
 -- Find the commit dates for  a file in a git dir was
-local function file2gitci(dir, filename)
+function file2gitci(dir, filename)
     local i, t, popen = 0, {}, io.popen
     local dir, filename = shell_escape(dir), shell_escape(filename)
     local cmd = 'git --git-dir "'..dir..'.git" log --pretty=format:"%ct" --date=local --reverse -- "'..filename..'"'
@@ -45,7 +62,7 @@ local function file2gitci(dir, filename)
     return t
 end
 
-local function filename2title(filename)
+function filename2title(filename)
     title = filename:gsub('.md$', ''):gsub('-', ' ')
     return title
 end
@@ -60,6 +77,23 @@ function shell_escape(s)
     return (tostring(s) or ''):gsub('"', '\\"')
 end
 
+-- Helper to iterate a table by sorted keys
+function itersort (t, f)
+  local a = {}
+  -- Sort on timestamp key reverse
+  f = function(a,b) return tonumber(a)>tonumber(b) end
+  for n in pairs(t) do table.insert(a, n) end
+  table.sort(a, f)
+  local i = 0      -- iterator variable
+  local iter = function ()   -- iterator function
+    i = i + 1
+    if a[i] == nil then return nil
+    else return a[i], t[a[i]]
+    end
+  end
+  return iter
+end
+
 -- 
 -- Index view
 --
@@ -67,20 +101,8 @@ local function index()
     
     -- increment index counter
     local counter, err = red:incr("index_visist_counter")
-
-    local postlist = get_posts()
-    local posts = {}
-    for i, post in pairs(postlist) do
-        local gitdate = file2gitci(BLAGDIR, post)
-        -- Skip unversioned files
-        if #gitdate > 0 then 
-            -- Use first date
-            posts[gitdate[1]] = filename2title(post)
-        end
-    end
-    -- Sort on timestamp key
-    table.sort(posts, function(a,b) return tonumber(a)>tonumber(b) end)
-
+    -- Get 10 posts
+    local posts = posts_with_dates(10)
     -- load template
     local page = tirtemplate.tload('index.html')
     local context = {
@@ -156,9 +178,14 @@ local function blog(match)
     -- increment visist counter
     local counter, err = red:incr(page..":visit")
 
+    -- Get more posts to be linked
+    local posts = posts_with_dates(5)
+
     local ctx = {
         created = ngx.http_time(gitdate[1]),
         content = mdhtml,
+        title = filename2title(mdcurrent),
+        posts = posts,
         counter = counter,
     } 
     local template = tirtemplate.tload('blog.html')
