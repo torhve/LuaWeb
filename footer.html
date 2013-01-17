@@ -22,6 +22,8 @@
               piwikTracker.enableLinkTracking();
           });
 
+          $('.logo img').hover(function(){ $(this).addClass('icon-spin'); }, function() {$(this).removeClass('icon-spin')});
+
         })
       }(window.jQuery)
       <!-- Piwik --> 
