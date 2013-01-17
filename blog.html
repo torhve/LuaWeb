@@ -1,0 +1,21 @@
+{( "header.html" )}
+    <article class="content">
+    <span class="date muted">{{ created }}</span>
+    {{ content }}
+    </article>
+  <div class="content also">
+  <hr class="featurette-divider">
+   <h6 class="also muted">Also read</h6>
+    <ul class="blog-post-list unstyled">
+        {% for date, ptitle in itersort(posts) do %}
+        {% if ptitle ~= title then %}
+        <li><span><a href="/{{ptitle}}">{{filename2title(ptitle)}}</a><small> {{ ngx.http_time(date) }}</span></a>
+        {% end %}
+        {% end %}
+        <li><span><a href="/2013/01/05/salt-icinga-nrpe-replacement">How I taught Icinga how to use Salt Stack for asynchrynous distributed passive checks</a><small> 05.01.2013</small></span></li>
+        <li><span><a href="/saltvirt">How I made a HTML5 virtualization UI on top of Salt Stack </a><small>29.12.2012</small></span></li>
+        <li><span><a href="/about">My lua micro web framework</a> <small>10.11.2012</small></span></li>
+    </ul>
+</div>
+
+{( "footer.html" )}
