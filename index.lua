@@ -17,49 +17,12 @@ BLAGTITLE = 'hveem.no'
 -- the db global
 red = nil
 
--- Get all the files in a dir
-local function get_posts()
-    local directory = shell_escape(BLAGDIR)
-    local i, t, popen = 0, {}, io.popen
-    local handle = popen('ls "'..directory..'"')
-    if not handle then return {} end
-    for filename in handle:lines() do
-        i = i + 1
-        t[i] = filename
-    end
-    handle:close()
-    return t
-end
-
 -- Return a table with post date as key and title as val
 local function posts_with_dates(limit)
-    local postlist = get_posts()
-    local posts = {}
-    for i, post in pairs(postlist) do
-        local gitdate = file2gitci(BLAGDIR, post)
-        -- Skip unversioned files
-        if #gitdate > 0 then 
-            -- Use first date
-            posts[gitdate[1]] = filename2title(post)
-        end
-        -- Break when we reach limit
-        if limit and i > limit then break end
-    end
-    return posts
-end
-
--- Find the commit dates for  a file in a git dir was
-function file2gitci(dir, filename)
-    local i, t, popen = 0, {}, io.popen
-    local dir, filename = shell_escape(dir), shell_escape(filename)
-    local cmd = 'git --git-dir "'..dir..'.git" log --pretty=format:"%ct" --date=local --reverse -- "'..filename..'"'
-    local handle = popen(cmd)
-    for gitdate in handle:lines() do
-        i = i + 1
-        t[i] = gitdate
-    end
-    handle:close()
-    return t
+    local posts, err = red:zrevrange('posts', 0, limit, 'withscores')
+    if err then return {} end
+    posts = red:array_to_hash(posts)
+    return swap(posts)
 end
 
 function filename2title(filename)
@@ -72,9 +35,13 @@ function slugify(title)
     return slug
 end
 
---- Better safe than sorry
-function shell_escape(s)
-    return (tostring(s) or ''):gsub('"', '\\"')
+-- Swap key and values in a table
+function swap(t)
+    local a = {}
+    for k, v in pairs(t) do
+        a[v] = k
+    end
+    return a
 end
 
 -- Helper to iterate a table by sorted keys
@@ -156,25 +123,17 @@ end
 --
 local function blog(match)
     local page = match[1] 
-    local mdfiles = get_posts()
-    local mdcurrent = nil
-    for i, mdfile in pairs(mdfiles) do
-        if page..'.md' == mdfile then
-            mdcurrent = mdfile
-            break
-        end
-    end
+    local date, err = red:zscore('posts', page)
     -- No match, return 404
-    if not mdcurrent then
+    if err or date == ngx.null then
         return ngx.HTTP_NOT_FOUND
     end
     
-    local mdfile =  BLAGDIR .. mdcurrent
+    local mdfile =  BLAGDIR .. page .. '.md'
     local mdfilefp = assert(io.open(mdfile, 'r'))
     local mdcontent = mdfilefp:read('*a')
-    mdfilefp:close()
     local mdhtml = markdown(mdcontent) 
-    local gitdate = file2gitci(BLAGDIR, mdcurrent)
+    mdfilefp:close()
     -- increment visist counter
     local counter, err = red:incr(page..":visit")
 
@@ -182,9 +141,9 @@ local function blog(match)
     local posts = posts_with_dates(5)
 
     local ctx = {
-        created = ngx.http_time(gitdate[1]),
+        created = ngx.http_time(date),
         content = mdhtml,
-        title = filename2title(mdcurrent),
+        title = filename2title(page),
         posts = posts,
         counter = counter,
     } 
