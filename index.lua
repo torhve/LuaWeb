@@ -123,17 +123,48 @@ end
 --
 local function blog(match)
     local page = match[1] 
+    -- Checkf the requests page exists as a key in the sorted set
     local date, err = red:zscore('posts', page)
     -- No match, return 404
     if err or date == ngx.null then
         return ngx.HTTP_NOT_FOUND
     end
-    
-    local mdfile =  BLAGDIR .. page .. '.md'
-    local mdfilefp = assert(io.open(mdfile, 'r'))
-    local mdcontent = mdfilefp:read('*a')
-    local mdhtml = markdown(mdcontent) 
-    mdfilefp:close()
+    -- Check if the page is in redis cache
+    -- check if the page cache needs updating
+    local post, err = red:get('post:'..page..':log')
+    if err or post == ngx.null then
+        ngx.say('Error fetching post from database')
+        return 500
+    end
+    local postlog = cjson.decode(post)
+    local lastupdate = 0
+    for ref, attrs in pairs(postlog) do
+        local logdate = attrs.timestamp
+        if logdate > lastupdate then
+            lastupdate = logdate
+        end
+    end
+    local lastgenerated, err = red:get('post:'..page..':cached')
+    local nocache = true
+    if lastgenerated == ngx.null or err then 
+        lastgenerated = 0 
+        nocache = true 
+    else
+        lastgenerated = tonumber(lastgenerated)
+    end
+    if lastupdate <= lastgenerated then nocache = false end
+    local mdhtml = '' 
+    if nocache then
+        local mdfile =  BLAGDIR .. page .. '.md'
+        local mdfilefp = assert(io.open(mdfile, 'r'))
+        local mdcontent = mdfilefp:read('*a')
+        mdhtml = markdown(mdcontent) 
+        mdfilefp:close()
+        local ok, err = red:set('post:'..page..':cached', lastupdate)
+        local ok, err = red:set('post:'..page..':md', mdhtml)
+    else
+        mdhtml = red:get('post:'..page..':md')
+    end
     -- increment visist counter
     local counter, err = red:incr(page..":visit")
 
