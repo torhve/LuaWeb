@@ -7,7 +7,7 @@ for FILE in $(ls *md) ; do
     TITLE="${FILE%%.*}"
     REDIS_KEY="post:$TITLE:log" 
     # get json log output with unix timestamp date
-    OUTPUT=$(exec git log --pretty=format:'{"commit": "%H", "author": "%an <%ae>", "timestamp": %ct, "message": "%s"},' -- $FILE)
+    OUTPUT=$(exec git log --pretty=format:'{"commit": "%H", "author": "%an <%ae>", "timestamp": %at, "message": "%s"},' -- $FILE)
     # Strip last ,
     OUTPUT="${OUTPUT%%,}"
     # Switch linesbreaks to , with goal to eventually make a list
