@@ -6,6 +6,8 @@ local cjson = require "cjson"
 local markdown = require "markdown"
 -- Load our blog atom generator
 local atom = require "atom"
+-- We need os for date formatting
+local os = require "os"
 
 -- Set the content type
 ngx.header.content_type = 'text/html';
@@ -63,6 +65,11 @@ function itersort (t, f)
     end
   end
   return iter
+end
+
+-- Date formatter helper
+function blogdate(timestamp)
+    return os.date('!%d %B %Y', timestamp)
 end
 
 -- 
@@ -170,7 +177,7 @@ local function blog(match)
     local posts = posts_with_dates(5)
 
     local ctx = {
-        created = ngx.http_time(date),
+        created = blogdate(date),
         content = mdhtml,
         title = filename2title(page),
         posts = posts,

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="nn">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>{{title}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Tor Hveem's blog">
+    <meta name="author" content="Tor Hveem">
 
-    <link href="/static/fa/css/font-awesome.css" rel="stylesheet">
     <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/fa/css/font-awesome.css" rel="stylesheet">
     <link href="/feed/" type="application/atom+xml" rel="alternate" title="Blog Atom Feed">
     <link rel="stylesheet" href="/static/hl/default.min.css">
     <style>
@@ -19,60 +19,58 @@
       color: #222;
       /*font-family: 'Open Sans', 'Georgia', sans-serif;*/
       font: 15px/22px 'Open Sans',Arial,Helvetica,sans-serif;
-      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAAnRSTlMA/1uRIrUAAAAeSURBVBjTY/iPBhj+/z/3HxkzYKhAlf+PRcXQNQMAcMz44fe3nNQAAAAASUVORK5CYII=);
-      background-color: #fefefe;
+      background-color: #fdfdfd;
     /*  background-image: url(static/dust.png); */
     }
-        .drop-shadow {
-            position:relative;
-            float:left;
-            background: white;
-            -webkit-box-shadow:0 1px 1px rgba(0, 0, 0, 0.3), 0 0 2px rgba(0, 0, 0, 0.1) inset;
-               -moz-box-shadow:0 1px 1px rgba(0, 0, 0, 0.3), 0 0 2px rgba(0, 0, 0, 0.1) inset;
-                    box-shadow:0 1px 1px rgba(0, 0, 0, 0.3), 0 0 2px rgba(0, 0, 0, 0.1) inset;
-            -moz-border-radius:3px;
-                 border-radius:3px;
-        }
+    .drop-shadow {
+        position:relative;
+        float:left;
+        background: white;
+        -webkit-box-shadow:0 1px 1px rgba(0, 0, 0, 0.3), 0 0 2px rgba(0, 0, 0, 0.1) inset;
+           -moz-box-shadow:0 1px 1px rgba(0, 0, 0, 0.3), 0 0 2px rgba(0, 0, 0, 0.1) inset;
+                box-shadow:0 1px 1px rgba(0, 0, 0, 0.3), 0 0 2px rgba(0, 0, 0, 0.1) inset;
+        -moz-border-radius:3px;
+             border-radius:3px;
+    }
 
-        .drop-shadow:before,
-        .drop-shadow:after {
-            content:"";
-            position:absolute;
-            z-index:-2;
-            bottom:15px;
-            left:10px;
-            width:50%;
-            height:20%;
-            max-width:300px;
-            max-height:100px;
-            -webkit-box-shadow:0 15px 10px rgba(0, 0, 0, 0.7);
-               -moz-box-shadow:0 15px 10px rgba(0, 0, 0, 0.7);
-                    box-shadow:0 15px 10px rgba(0, 0, 0, 0.7);
-            -webkit-transform:rotate(-3deg);
-               -moz-transform:rotate(-3deg);
-                -ms-transform:rotate(-3deg);
-                 -o-transform:rotate(-3deg);
-                    transform:rotate(-3deg);
-        }
+    .drop-shadow:before,
+    .drop-shadow:after {
+        content:"";
+        position:absolute;
+        z-index:-2;
+        bottom:15px;
+        left:10px;
+        width:50%;
+        height:20%;
+        max-width:300px;
+        max-height:100px;
+        -webkit-box-shadow:0 15px 10px rgba(0, 0, 0, 0.7);
+           -moz-box-shadow:0 15px 10px rgba(0, 0, 0, 0.7);
+                box-shadow:0 15px 10px rgba(0, 0, 0, 0.7);
+        -webkit-transform:rotate(-3deg);
+           -moz-transform:rotate(-3deg);
+            -ms-transform:rotate(-3deg);
+             -o-transform:rotate(-3deg);
+                transform:rotate(-3deg);
+    }
 
-        .drop-shadow:after {
-            right:10px;
-            left:auto;
-            -webkit-transform:rotate(3deg);
-               -moz-transform:rotate(3deg);
-                -ms-transform:rotate(3deg);
-                 -o-transform:rotate(3deg);
-                    transform:rotate(3deg);
-        }
+    .drop-shadow:after {
+        right:10px;
+        left:auto;
+        -webkit-transform:rotate(3deg);
+           -moz-transform:rotate(3deg);
+            -ms-transform:rotate(3deg);
+             -o-transform:rotate(3deg);
+                transform:rotate(3deg);
+    }
     svg {
-
-  width: auto\9;
-  height: auto;
-  max-width: 100%;
-  vertical-align: middle;
-  border: 0;
-  -ms-interpolation-mode: bicubic;
-}
+      width: auto\9;
+      height: auto;
+      max-width: 100%;
+      vertical-align: middle;
+      border: 0;
+      -ms-interpolation-mode: bicubic;
+    }
     .logo img, .logo svg {
         max-height: 200px;
         max-width: 100%;
@@ -81,6 +79,11 @@
     }
     .logo svg path {
         fill: #2779d3;
+    }
+    .date {
+        text-transform: uppercase;
+        font-size: smaller;
+        color: #999;
     }
     .carousel-caption {
       background-color: transparent;
@@ -102,16 +105,15 @@
     }
     a, .blue {
         color: #2779d3;
-        color: #2779d3;
     }
     .gray {
         color: #333;
     }
-       
     .bear {
         font-size: 96px;
     }
     #sidebar {
+        /*background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAAnRSTlMA/1uRIrUAAAAeSURBVBjTY/iPBhj+/z/3HxkzYKhAlf+PRcXQNQMAcMz44fe3nNQAAAAASUVORK5CYII=);*/
         position: fixed;
         width: 12%;
         padding-left: 2%;
@@ -122,6 +124,7 @@
         padding: 30px;
         border-right: 1px solid #eee;
         background-color: #fafafa;
+        box-shadow: 3px 3px color:#eee inset;
     }
     #sidebar .about {
       position: fixed;
@@ -140,7 +143,7 @@
         margin-top: 30px;
     }
     aside.info li {
-        margin-bottom: 15px;
+        margin-bottom: 18px;
         width: 100%;
     }
     aside.info li a {
@@ -173,8 +176,12 @@
         border-left: 1px solid #e2e2e2;
         border-right: 1px solid #e2e2e2;
     }
-    .content p, .content blockquote {
+    .content p, .content blockquote, .content pre {
         max-width: 968px;
+    }
+    .content h1 {
+        font-style: italic;
+        margin-bottom: 15px;
     }
     pre {
         padding: 0
@@ -241,52 +248,15 @@
 
       <aside class="logo">
         <a href="/" title="Home">
-               <img class="" src="/static/ibear.svg">
-               <!--
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	  viewBox="0 0 300 300" enable-background="new 0 0 300 300" xml:space="preserve">
-<g>
-	<path fill="#2779D3" d="M150.055,5.399c-80.358,0-145.5,65.141-145.5,145.5c0,80.357,65.142,145.5,145.5,145.5
-		c80.357,0,145.5-65.143,145.5-145.5C295.555,70.541,230.412,5.399,150.055,5.399z M150.055,282.969
-		c-72.94,0-132.069-59.13-132.069-132.069c0-72.941,59.129-132.069,132.069-132.069c72.939,0,132.069,59.128,132.069,132.069
-		C282.124,223.839,222.994,282.969,150.055,282.969z"/>
-	<path fill="#2779D3" d="M150.055,28.269c-67.619,0-122.631,55.012-122.631,122.631S82.437,273.53,150.055,273.53
-		s122.63-55.012,122.63-122.631S217.674,28.269,150.055,28.269z M150.055,268.53c-64.862,0-117.631-52.769-117.631-117.631
-		c0-64.862,52.769-117.631,117.631-117.631s117.63,52.769,117.63,117.631C267.686,215.762,214.917,268.53,150.055,268.53z"/>
-</g>
-<g>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#2779D3" d="M215.635,88.373c0.723,6.692-4.02,7.917-7.462,10.446
-		c-6.287,0.317-5.258-6.681-8.954-8.954C206.973,86.589,209.957,86.589,215.635,88.373z"/>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#2779D3" d="M91.773,98.819c-0.552,5.915-4.327,8.607-8.954,10.446
-		c-5.693-0.772-7.609-5.323-7.461-11.938C83.11,97.035,85.348,97.781,91.773,98.819z"/>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#2779D3" d="M186.001,102.812c-3.106-7.755,10.761-9.76,9.978-1.443
-		C192.75,100,189.324,102.333,186.001,102.812z"/>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#2779D3" d="M140.575,105.939c-8.325-1.689-11.391,0.382-18.832-1.026
-		C123.61,99.69,141.761,94.839,140.575,105.939z"/>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#2779D3" d="M142.511,243.859c9.992-23.791,50.602-33.214,58.421-67.44
-		c4.241-18.555-2.191-45.048,5.748-62.677c4.372-9.708,32.79-25.36,10.737-33.646c-12.332-4.633-20.122,3.052-28.645,3.354
-		c-12.035,0.425-22.665-7.794-32.831-8.954c-16.494-1.881-30.306,4.381-43.732,9.332c-5.157,1.902-14.013,4.837-20.437,5.592
-		c-11.858,1.393-29.858-10.545-27.084,13.876c1.515,13.341,16.579,13.099,26.861,20.893c17.018,12.897,24.318,53.125,56.93,57.599
-		c13.111-19.72,39.305-16.203,41.185-47.153c-0.394-0.608,0.018-5.892-1.104-5.856c-4.472,6.56-10.38,7.505-13.151,7.794
-		c-0.486,1.609-0.414,4.209,0.143,5.01c0.618,0.891,6.139-1.53,7.844-1.199c2.895,0.561,2.329,3.542,1.792,6.189
-		c-13.284,5.677-33.431,18.362-46.261,1.492c10.645-0.71,17.561,4.059,33.084-4.604c-1.358-1.709,1.063-6.55-0.755-6.46
-		c-6.566,0.326-13.661-4.812-14.422-12.367c-1.364-13.536,12.332-25.608,28.354-12.384c-1.466-5.325-1.099-16.208-25.969-12.384
-		c-13.345,2.052,13.926-4.323,20-1.046c11.673,6.297,16.095,31.554,10.446,49.246c-6.651,20.836-31.925,24.308-38.2,43.277
-		c-30.98-5.467-41.253-33.116-55.215-53.723c-7.769-11.466-22.143-11.125-31.339-20.892c-9.83-10.44-8.776-34.578,8.954-37.308
-		c5.856-0.9,11.565,3.517,16.416,2.985c18.747-2.055,35.351-17.233,64.169-14.923c10.399,0.834,20.236,8.954,32.83,8.954
-		c12.868,0,44.438-17.695,41.785,13.431c-0.755,8.861-11.166,12.848-16.415,22.385c-8.718,15.841-2.56,35.818-5.97,59.692
-		c-5.366,37.562-51.149,52.2-65.662,82.077c-13.952-38.764-90.591-39.952-62.677-101.477
-		C66.694,218.907,124.861,209.632,142.511,243.859z"/>
-</g>
-</svg>-->
+           <img class="" src="/static/ibear.svg">
         </a>
       </aside>
       <aside class="info">
           <h3><a class="brand" title="That's me" href="/">Tor Hveem</a></h3>
           <p class="muted">Letters from a stratosphere adventurer</p>
           <ul class="unstyled">
-              <li><a href="https://twitter.com/thveem"><i class="icon-twitter"></i>thveem</a></li>
               <li><a href='&#109;ail&#116;o&#58;&#116;&#111;r&#64;h%76&#101;%&#54;5m%2&#69;no'><i class="icon-envelope-alt"></i>t&#111;r&#64;&#104;&#118;&#101;em&#46;&#110;o</a></li>
+              <li><a href="https://twitter.com/thveem"><i class="icon-twitter"></i>thveem</a></li>
               <li><a href="https://github.com/torhve"><i class="icon-github"></i>github</a></li>
           </ul>
       </aside>
