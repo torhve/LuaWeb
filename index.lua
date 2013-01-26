@@ -4,6 +4,8 @@ local tirtemplate = require('tirtemplate')
 local redis = require "resty.redis"
 local cjson = require "cjson"
 local markdown = require "markdown"
+-- Load our blog atom generator
+local atom = require "atom"
 
 -- Set the content type
 ngx.header.content_type = 'text/html';
@@ -13,6 +15,8 @@ TEMPLATEDIR = ngx.var.root .. 'lua/';
 -- The git repository storing the markdown files. Needs trailing slash
 BLAGDIR = TEMPLATEDIR .. 'md/'
 BLAGTITLE = 'hveem.no'
+BLAGURL = 'http://hveem.no/'
+BLAGAUTHOR = 'Tor Hveem'
 
 -- the db global
 red = nil
@@ -80,6 +84,21 @@ local function index()
     -- render template with counter as context
     -- and return it to nginx
     ngx.print( page(context) )
+end
+
+-- 
+-- Atom feed view
+--
+local function feed()
+
+    -- increment feed counter
+    local counter, err = red:incr("feed:visit")
+    -- Get 10 posts
+    local posts = posts_with_dates(10)
+    -- Set correct content type
+    ngx.header.content_type = 'application/atom+xml'
+    ngx.print( atom.generate_xml(BLAGTITLE, BLAGURL, BLAGAUTHOR .. "'s blog", BLAGAUTHOR, 'feed/', posts) )
+
 end
 
 --
@@ -192,6 +211,7 @@ end
 local routes = {
     ['$']         = index,
     ['about$']    = about,
+    ['feed/$']     = feed,
     ['(.*)$']     = blog,
 }
 
