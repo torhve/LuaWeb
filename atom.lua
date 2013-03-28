@@ -10,6 +10,8 @@ local table = table
 local tonumber = tonumber
 local ngx = ngx
 local os = os
+local type = type
+local tostring = tostring
 
 module(...)
 
@@ -38,8 +40,24 @@ local function rfc3339(date)
     return os.date('!%Y-%m-%dT%H:%M:%SZ', date)
 end
 
+local function htmlspecialchars(value)
+  local subst =
+  {
+    ["&"] = "&amp;";
+    ['"'] = "&quot;";
+    ["'"] = "&apos;";
+    ["<"] = "&lt;";
+    [">"] = "&gt;";
+  }
 
-function generate_xml(title, link, description, author, feedurl, entries)
+  if type(value) == "number" then
+      return value
+  end
+  value = tostring(value)
+  return (value:gsub("[&\"'<>]", subst))
+end
+
+function generate_xml(title, link, description, author, feedurl, entries, entriescontent)
     local entriesxml = ''
     local updated 
 
@@ -48,10 +66,12 @@ function generate_xml(title, link, description, author, feedurl, entries)
             updated = rfc3339(date)
         end
         local etitle = ptitle:gsub('-', ' ')
+        local htmlcontent = htmlspecialchars(entriescontent[ptitle])
         local entryxml = [[
   <entry>
     <title>]]..etitle..[[</title>
     <id>]]..link..ptitle..[[</id>
+    <content type="html">]]..htmlcontent..[[</content>
     <link rel="alternate" href="]]..link..ptitle..[[" />
     <updated>]]..rfc3339(date)..[[</updated>
   </entry>

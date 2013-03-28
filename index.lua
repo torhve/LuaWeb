@@ -93,47 +93,8 @@ local function index()
     ngx.print( page(context) )
 end
 
--- 
--- Atom feed view
---
-local function feed()
-
-    -- increment feed counter
-    local counter, err = red:incr("feed:visit")
-    -- Get 10 posts
-    local posts = posts_with_dates(10)
-    -- Set correct content type
-    ngx.header.content_type = 'application/atom+xml'
-    ngx.print( atom.generate_xml(BLAGTITLE, BLAGURL, BLAGAUTHOR .. "'s blog", BLAGAUTHOR, 'feed/', posts) )
-
-end
-
---
--- the about view
---
-local function about()
-    -- increment about counter
-    local counter, err = red:incr("about_visist_counter")
-
-    -- load template
-    local page = tirtemplate.tload('about.html')
-    local context = {title = 'My lua micro web framework', counter = tostring(counter) }
-    -- render template with counter as context
-    -- and return it to nginx
-    ngx.print( page(context) )
-end
-
---
--- blog view for a single post
---
-local function blog(match)
-    local page = match[1] 
-    -- Checkf the requests page exists as a key in the sorted set
-    local date, err = red:zscore('posts', page)
-    -- No match, return 404
-    if err or date == ngx.null then
-        return ngx.HTTP_NOT_FOUND
-    end
+-- helper function to return blog content given a title
+local function blogcontent(page)
     -- Check if the page is in redis cache
     -- check if the page cache needs updating
     local post, err = red:get('post:'..page..':log')
@@ -170,6 +131,56 @@ local function blog(match)
     else
         mdhtml = red:get('post:'..page..':md')
     end
+    return mdhtml
+end
+
+-- 
+-- Atom feed view
+--
+local function feed()
+
+    -- increment feed counter
+    local counter, err = red:incr("feed:visit")
+    -- Get 10 posts
+    local posts = posts_with_dates(10)
+    -- Get the HTML content for the content
+    local htmlposts = {}
+    for date, ptitle in pairs(posts) do
+        htmlposts[ptitle] = blogcontent(ptitle)
+    end
+    -- Set correct content type
+    ngx.header.content_type = 'application/atom+xml'
+    ngx.print( atom.generate_xml(BLAGTITLE, BLAGURL, BLAGAUTHOR .. "'s blog", BLAGAUTHOR, 'feed/', posts, htmlposts) )
+
+end
+
+--
+-- the about view
+--
+local function about()
+    -- increment about counter
+    local counter, err = red:incr("about_visist_counter")
+
+    -- load template
+    local page = tirtemplate.tload('about.html')
+    local context = {title = 'My lua micro web framework', counter = tostring(counter) }
+    -- render template with counter as context
+    -- and return it to nginx
+    ngx.print( page(context) )
+end
+
+--
+-- blog view for a single post
+--
+local function blog(match)
+    local page = match[1] 
+    -- Checkf the requests page exists as a key in the sorted set
+    local date, err = red:zscore('posts', page)
+    -- No match, return 404
+    if err or date == ngx.null then
+        return ngx.HTTP_NOT_FOUND
+    end
+    local mdhtml = blogcontent(page)
     -- increment visist counter
     local counter, err = red:incr(page..":visit")
 
