@@ -1,10 +1,11 @@
-Simple blog engine
+A Simple nameless blog engine
 ======
 
-My motivation was just having a simple no frills blog for publishing some of my latest writings. I have also worked a bit with Wordpress lately, and I wanted to play with a comepletely different software stack. This project is not very serious and is meant for personal use.
+My motivation was just having a simple no frills blog for publishing some of my latest writings. This project is not very serious and is meant for personal use.
 The most unusual part about this project is it's usage of nginx as the "app server". This is possible using lua, since there is a nginx lua module that enables you to call lua from the nginx conf. Have a look at [openresty's site](http://openresty.org) for more about what it enables you to do.
+One of the coolest things about Lua is its speed, check out <http://www.techempower.com/benchmarks/>
 
-Let me begin by listing the components being used:
+The full stack:
 
 ##### Components
 
@@ -47,7 +48,7 @@ Publishing a new article is then just the small matter of writing a Markdown fil
 
 Tor Hveem <tor@hveem.no>
 
-## Lice and Copyright
+## License and Copyright
 
 This code is licensed under the BSD license.
 
