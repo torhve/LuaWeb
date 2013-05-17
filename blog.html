@@ -9,7 +9,7 @@
     <ul class="blog-post-list unstyled">
         {% for date, ptitle in itersort(posts) do %}
             {% if ptitle ~= title then %}
-        <li><span><a href="/{{ptitle}}">{{filename2title(ptitle)}}</a><span class="date"> {{ blogdate(date) }}</span></a>
+        <li><span><a href="/{{ptitle}}">{{filename2title(ptitle)}}</a><span class="date"> {{ blogdate(date) }}</span></a></li>
             {% end %}
         {% end %}
         <li><span><a href="/about">My lua micro web framework</a> <span class="date">10.11.2012</span></span></li>
