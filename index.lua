@@ -1,5 +1,5 @@
 -- load our template engine
-local tirtemplate = require('tirtemplate')
+local tirtemplate = require 'tirtemplate' 
 -- Load redis
 local redis = require "resty.redis"
 local cjson = require "cjson"
@@ -23,13 +23,6 @@ BLAGAUTHOR = 'Tor Hveem'
 -- the db global
 red = nil
 
--- Return a table with post date as key and title as val
-local function posts_with_dates(limit)
-    local posts, err = red:zrevrange('posts', 0, limit, 'withscores')
-    if err then return {} end
-    posts = red:array_to_hash(posts)
-    return swap(posts)
-end
 
 function filename2title(filename)
     title = filename:gsub('.md$', ''):gsub('-', ' ')
@@ -72,6 +65,14 @@ function blogdate(timestamp)
     return os.date('!%d %B %Y', timestamp)
 end
 
+-- Return a table with post date as key and title as val
+local function posts_with_dates(limit)
+    local posts, err = red:zrevrange('posts', 0, limit, 'withscores')
+    if err then return {} end
+    posts = red:array_to_hash(posts)
+    return swap(posts)
+end
+
 -- 
 -- Index view
 --
@@ -79,6 +80,7 @@ local function index()
     
     -- increment index counter
     local counter, err = red:incr("index_visist_counter")
+    if err then ngx.log(ngx.ERR, 'Error with visit counter: '..err) end
     -- Get 10 posts
     local posts = posts_with_dates(10)
     -- load template
@@ -185,7 +187,7 @@ local function blog(match)
     local counter, err = red:incr(page..":visit")
 
     -- Get more posts to be linked
-    local posts = posts_with_dates(5)
+    local posts = posts_with_dates(5) 
 
     local ctx = {
         created = blogdate(date),
@@ -196,7 +198,6 @@ local function blog(match)
     } 
     local template = tirtemplate.tload('blog.html')
     ngx.print( template(ctx) )
-
 end
 
 -- 
@@ -205,7 +206,7 @@ end
 local function init_db()
     -- Start redis connection
     red = redis:new()
-    local ok, err = red:connect("unix:/var/run/redis/redis.sock")
+    local ok, err = red:connect("127.0.0.1", 6379)
     if not ok then
         ngx.say("failed to connect: ", err)
         return
@@ -246,4 +247,4 @@ for pattern, view in pairs(routes) do
     end
 end
 -- no match, return 404
-ngx.exit( ngx.HTTP_NOT_FOUND )
+--ngx.exit( ngx.HTTP_NOT_FOUND )
