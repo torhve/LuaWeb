@@ -9,9 +9,6 @@ local atom = require "atom"
 -- We need os for date formatting
 local os = require "os"
 
--- Set the content type
-ngx.header.content_type = 'text/html';
-
 -- use nginx $root variable for template dir, needs trailing slash
 TEMPLATEDIR = ngx.var.root .. 'lua/';
 -- The git repository storing the markdown files. Needs trailing slash
@@ -19,6 +16,8 @@ BLAGDIR = TEMPLATEDIR .. 'md/'
 BLAGTITLE = 'hveem.no'
 BLAGURL = 'http://hveem.no/'
 BLAGAUTHOR = 'Tor Hveem'
+-- URL base
+local BASE = '/'
 
 -- the db global
 red = nil
@@ -234,11 +233,14 @@ local routes = {
     ['(.*)$']     = blog,
 }
 
-local BASE = '/'
+
+-- Set the content type
+ngx.header.content_type = 'text/html';
+
 -- iterate route patterns and find view
 for pattern, view in pairs(routes) do
     local uri = '^' .. BASE .. pattern
-    local match = ngx.re.match(ngx.var.uri, uri, "") -- regex mather in compile mode
+    local match = ngx.re.match(ngx.var.uri, uri, "oj") -- regex mather in compile mode
     if match then
         init_db()
         exit = view(match) or ngx.HTTP_OK
