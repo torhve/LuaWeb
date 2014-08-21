@@ -144,6 +144,7 @@
     aside.info li {
         margin-bottom: 18px;
         width: 100%;
+        white-space: nowrap;
     }
     aside.info li a {
         color: #222;
@@ -179,20 +180,36 @@
         padding: 30px;
     }
     .carousel {
-        position: relative;
         width: 100%;
+        position: relative;
+        margin-left: 16%;
+        padding: 0;
         border-top: 1px solid #e2e2e2;
         border-left: 1px solid #e2e2e2;
         border-right: 1px solid #e2e2e2;
     }
-    .content p, .content blockquote, .content pre, .content h1 {
+    .content p, .content blockquote, .content pre, .content h1, .content h2 {
         max-width: 968px;
+        font-size: 18px;
+        line-height: 24px;
+        font-weight: 300;
+        word-break: break-word;
+-webkit-hyphens: auto;
+   -moz-hyphens: auto;
+    -ms-hyphens: auto;
+        hyphens: auto;
     }
     .content h1 {
-        margin-bottom: 15px;
+        font-size: 40px;
+    }
+    .content h1, .content h2 {
+        margin-bottom: 36px;
+        font-size: 36px;
+        line-height: 1;
     }
     pre {
-        padding: 0
+        padding: 0;
+        background: #282828;
     }
     .blog-post-list a {
         text-transform: capitalize;
@@ -212,7 +229,7 @@
         width: 31%;
     }
     @media (max-width: 968px) {
-        #sidebar, .content {
+        #sidebar, .content, .carousel {
             position: relative;
             min-height: 0;
             margin-left: 0;
