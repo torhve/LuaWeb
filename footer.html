@@ -2,31 +2,27 @@
       <footer>
       </footer>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <script src="/static/bootstrap/js/bootstrap.js"></script>
     <script src="/static/hl/highlight.min.js"></script>
 
     <script>
-      // var test = {{ counter }} ;
-      !function ($) {
-        $(function(){
-          // carousel 
-          $('#myCarousel').carousel()
-          // hljs 
-          $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
-          // Analytics
-          var pkBaseURL = (("https:" == document.location.protocol) ? "https://statistikk.idrift.no/" : "http://statistikk.idrift.no/");
-          $.getScript(pkBaseURL + 'piwik.js', function(){
-              var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 115);
-              piwikTracker.trackPageView();
-              piwikTracker.enableLinkTracking();
-          });
+        // hljs 
+        var comments = document.querySelectorAll('pre code');
+        for (var i = 0, len = comments.length; i < len; i++) {
+              var comment = comments[i];
+              hljs.highlightBlock(comment);
+        }
+        // Analytics
+        (function(){ var u=(("https:" == document.location.protocol) ? "https://statistikk.idrift.no/" : "http://statistikk.idrift.no/");
+         var _paq = _paq || [];
+         _paq.push(['setSiteId', 115]);
+         _paq.push(['setTrackerUrl', u+'piwik.php']);
+         _paq.push(['trackPageView']);
+         _paq.push(['enableLinkTracking']);
+         var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript'; g.defer=true; g.async=true; g.src=u+'piwik.js';
+         s.parentNode.insertBefore(g,s); })();
 
-          $('.logo img').hover(function(){ $(this).addClass('icon-spin'); }, function() {$(this).removeClass('icon-spin')});
 
-        })
-      }(window.jQuery)
-      <!-- Piwik --> 
+        //$('.logo img').hover(function(){ $(this).addClass('icon-spin'); }, function() {$(this).removeClass('icon-spin')});
     </script>
     <noscript><p><img src="http://statistikk.idrift.no/piwik.php?idsite=115" style="border:0" alt=""><p></noscript>
   </body>

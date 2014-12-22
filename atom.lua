@@ -2,7 +2,6 @@
 
 -- Simple atom generator in lua 
 
-local tirtemplate = require('tirtemplate')
 local setmetatable = setmetatable
 local ipairs = ipairs
 local pairs = pairs

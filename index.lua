@@ -1,5 +1,5 @@
--- load our template engine
-local tirtemplate = require 'tirtemplate' 
+-- Load https://github.com/bungle/lua-resty-template
+local template = require 'resty.template'
 -- Load redis
 local redis = require "resty.redis"
 local cjson = require "cjson"
@@ -12,6 +12,7 @@ local os = require "os"
 -- use nginx $root variable for template dir, needs trailing slash
 TEMPLATEDIR = ngx.var.root .. 'lua/';
 -- The git repository storing the markdown files. Needs trailing slash
+
 BLAGDIR = TEMPLATEDIR .. 'md/'
 BLAGTITLE = 'hveem.no'
 BLAGURL = 'http://hveem.no/'
@@ -19,8 +20,8 @@ BLAGAUTHOR = 'Tor Hveem'
 -- URL base
 local BASE = '/'
 
--- the db global
-red = nil
+-- the redis db handle
+local red = nil
 
 
 function filename2title(filename)
@@ -28,7 +29,7 @@ function filename2title(filename)
     return title
 end
 
-function slugify(title)
+local function slugify(title)
     slug = title:gsub(' ', '-')
     return slug
 end
@@ -76,22 +77,20 @@ end
 -- Index view
 --
 local function index()
-    
+
     -- increment index counter
     local counter, err = red:incr("index_visist_counter")
     if err then ngx.log(ngx.ERR, 'Error with visit counter: '..err) end
     -- Get 10 posts
     local posts = posts_with_dates(10)
     -- load template
-    local page = tirtemplate.tload('index.html')
     local context = {
         title = BLAGTITLE, 
         counter = tostring(counter),
         posts = posts,
     }
-    -- render template with counter as context
-    -- and return it to nginx
-    ngx.print( page(context) )
+    -- render template with context
+    template.render('index.html', context)
 end
 
 -- helper function to return blog content given a title
@@ -162,12 +161,8 @@ local function about()
     -- increment about counter
     local counter, err = red:incr("about_visist_counter")
 
-    -- load template
-    local page = tirtemplate.tload('about.html')
     local context = {title = 'My lua micro web framework', counter = tostring(counter) }
-    -- render template with counter as context
-    -- and return it to nginx
-    ngx.print( page(context) )
+    template.render('about.html', context)
 end
 
 --
@@ -192,11 +187,11 @@ local function blog(match)
         created = blogdate(date),
         content = mdhtml,
         title = filename2title(page),
+        filename2title = filename2title,
         posts = posts,
         counter = counter,
-    } 
-    local template = tirtemplate.tload('blog.html')
-    ngx.print( template(ctx) )
+    }
+    template.render('blog.html', ctx)
 end
 
 -- 
@@ -229,7 +224,7 @@ end
 local routes = {
     ['$']         = index,
     ['about$']    = about,
-    ['feed/$']     = feed,
+    ['feed/$']    = feed,
     ['(.*)$']     = blog,
 }
 
