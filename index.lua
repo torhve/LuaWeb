@@ -10,22 +10,21 @@ local atom = require "atom"
 local os = require "os"
 
 -- use nginx $root variable for template dir, needs trailing slash
-TEMPLATEDIR = ngx.var.root .. 'lua/';
+local TEMPLATEDIR = ngx.var.root .. 'lua/';
 -- The git repository storing the markdown files. Needs trailing slash
-
-BLAGDIR = TEMPLATEDIR .. 'md/'
-BLAGTITLE = 'hveem.no'
-BLAGURL = 'http://hveem.no/'
-BLAGAUTHOR = 'Tor Hveem'
+local BLAGDIR = TEMPLATEDIR .. 'md/'
+local BLAGTITLE = 'hveem.no'
+local BLAGURL = 'http://hveem.no/'
+local BLAGAUTHOR = 'Tor Hveem'
 -- URL base
 local BASE = '/'
+
 
 -- the redis db handle
 local red = nil
 
-
-function filename2title(filename)
-    title = filename:gsub('.md$', ''):gsub('-', ' ')
+local function filename2title(filename)
+    title = filename:gsub('.md$', ''):gsub('-', ' '):gsub("^%l", string.upper)
     return title
 end
 
@@ -35,7 +34,7 @@ local function slugify(title)
 end
 
 -- Swap key and values in a table
-function swap(t)
+local function swap(t)
     local a = {}
     for k, v in pairs(t) do
         a[v] = k
@@ -44,7 +43,7 @@ function swap(t)
 end
 
 -- Helper to iterate a table by sorted keys
-function itersort (t, f)
+local function itersort (t, f)
   local a = {}
   -- Sort on timestamp key reverse
   f = function(a,b) return tonumber(a)>tonumber(b) end
@@ -61,7 +60,7 @@ function itersort (t, f)
 end
 
 -- Date formatter helper
-function blogdate(timestamp)
+local function blogdate(timestamp)
     return os.date('!%d %B %Y', timestamp)
 end
 
@@ -228,6 +227,11 @@ local routes = {
     ['(.*)$']     = blog,
 }
 
+-- Enable access to some functions in template
+template.itersort = itersort
+template.filename2title = filename2title
+template.blogdate = blogdate
+template.swap = swap
 
 -- Set the content type
 ngx.header.content_type = 'text/html';
