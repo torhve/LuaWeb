@@ -72,7 +72,7 @@ local function posts_with_dates(limit)
     return swap(posts)
 end
 
--- 
+--
 -- Index view
 --
 local function index()
@@ -193,7 +193,7 @@ local function blog(match)
     template.render('blog.html', ctx)
 end
 
--- 
+--
 -- Initialise db
 --
 local function init_db()
@@ -201,7 +201,7 @@ local function init_db()
     red = redis:new()
     local ok, err = red:connect("127.0.0.1", 6379)
     if not ok then
-        ngx.say("failed to connect: ", err)
+        ngx.log(ngx.ERR, "failed to connect: ", err)
         return
     end
 end
@@ -214,7 +214,7 @@ local function end_db()
     -- with 0 idle timeout
     local ok, err = red:set_keepalive(0, 100)
     if not ok then
-        ngx.say("failed to set keepalive: ", err)
+        ngx.log(ngx.ERR, "failed to set keepalive: ", err)
         return
     end
 end
